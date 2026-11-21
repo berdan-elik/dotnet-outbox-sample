@@ -12,5 +12,11 @@ public static class OrderEndpoints
             var order = await sender.Send(command, cancellationToken);
             return Results.Created($"/orders/{order.Id}", order);
         });
+
+        app.MapGet("/orders/{id:guid}", async (Guid id, ISender sender, CancellationToken cancellationToken) =>
+        {
+            var order = await sender.Send(new GetOrderQuery(id), cancellationToken);
+            return order is null ? Results.NotFound() : Results.Ok(order);
+        });
     }
 }
