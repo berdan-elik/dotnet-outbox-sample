@@ -52,6 +52,20 @@ public class OutboxTests(ApiFactory factory) : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_sender_timeout_counts_as_a_failed_attempt()
+    {
+        await factory.PostOrderAsync(Guid.NewGuid().ToString());
+        factory.EmailSender.OnSend = _ => throw new TaskCanceledException("the provider timed out");
+
+        await factory.ProcessOutboxBatchAsync();
+
+        var message = await SingleMessageAsync();
+        Assert.Null(message.ProcessedAt);
+        Assert.Equal(1, message.Attempts);
+        Assert.Equal("the provider timed out", message.LastError);
+    }
+
+    [Fact]
     public async Task A_message_that_keeps_failing_is_dead_lettered()
     {
         await factory.PostOrderAsync(Guid.NewGuid().ToString());

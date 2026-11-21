@@ -44,7 +44,9 @@ public sealed class OutboxProcessor(
                 await DispatchAsync(message, cancellationToken);
                 message.MarkProcessed(clock.GetUtcNow());
             }
-            catch (Exception exception) when (exception is not OperationCanceledException)
+            // A sender's own timeout also surfaces as OperationCanceledException, and that is
+            // a failed attempt like any other. Only a shutdown is left to propagate.
+            catch (Exception exception) when (!cancellationToken.IsCancellationRequested)
             {
                 RecordFailure(message, exception);
             }
