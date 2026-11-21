@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\OutboxSample.Application\OutboxSample.Application.csproj" />
+  </ItemGroup>
+
+</Project>

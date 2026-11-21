@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OutboxSample.Api/OutboxSample.Api.csproj" />
+    <Project Path="src/OutboxSample.Application/OutboxSample.Application.csproj" />
+    <Project Path="src/OutboxSample.Domain/OutboxSample.Domain.csproj" />
+    <Project Path="src/OutboxSample.Infrastructure/OutboxSample.Infrastructure.csproj" />
+  </Folder>
+</Solution>
