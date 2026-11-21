@@ -70,7 +70,7 @@ The integration tests start PostgreSQL through Testcontainers, so Docker has to 
 | `OutboxSample.Infrastructure` | EF Core context and migration, the outbox dispatcher, the email sender. |
 | `OutboxSample.Api` | Endpoints and error mapping. |
 
-Dependencies point inward: Api → Infrastructure → Application → Domain.
+Dependencies point inward: Api references Application and Infrastructure, Infrastructure references Application, Application references Domain, and Domain references nothing.
 
 ## Design notes
 
