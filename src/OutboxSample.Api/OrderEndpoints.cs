@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using OutboxSample.Application.Orders;
 
 namespace OutboxSample.Api;
@@ -7,8 +8,13 @@ public static class OrderEndpoints
 {
     public static void MapOrderEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/orders", async (CreateOrderCommand command, ISender sender, CancellationToken cancellationToken) =>
+        app.MapPost("/orders", async (
+            [FromHeader(Name = "Idempotency-Key")] string? idempotencyKey,
+            CreateOrderRequest request,
+            ISender sender,
+            CancellationToken cancellationToken) =>
         {
+            var command = new CreateOrderCommand(idempotencyKey ?? "", request.CustomerEmail, request.Lines);
             var order = await sender.Send(command, cancellationToken);
             return Results.Created($"/orders/{order.Id}", order);
         });
@@ -20,3 +26,5 @@ public static class OrderEndpoints
         });
     }
 }
+
+public sealed record CreateOrderRequest(string CustomerEmail, IReadOnlyList<CreateOrderLine> Lines);

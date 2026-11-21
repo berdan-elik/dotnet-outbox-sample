@@ -18,7 +18,6 @@ namespace OutboxSample.Infrastructure.Persistence.Migrations
                 {
                     key = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     request_hash = table.Column<string>(type: "character(64)", fixedLength: true, maxLength: 64, nullable: false),
-                    status_code = table.Column<int>(type: "integer", nullable: false),
                     response_body = table.Column<string>(type: "jsonb", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },

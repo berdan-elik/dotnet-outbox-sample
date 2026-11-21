@@ -14,7 +14,9 @@ public static class DependencyInjection
         services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssembly(assembly);
+            // Order matters: an invalid request is rejected before its key is looked up.
             configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            configuration.AddOpenBehavior(typeof(IdempotencyBehavior<,>));
         });
         services.AddValidatorsFromAssembly(assembly);
         services.TryAddSingleton(TimeProvider.System);

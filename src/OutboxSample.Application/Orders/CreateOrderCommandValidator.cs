@@ -6,6 +6,10 @@ public sealed class CreateOrderCommandValidator : AbstractValidator<CreateOrderC
 {
     public CreateOrderCommandValidator()
     {
+        RuleFor(command => command.IdempotencyKey)
+            .NotEmpty()
+            .MaximumLength(100)
+            .OverridePropertyName("Idempotency-Key");
         RuleFor(command => command.CustomerEmail).NotEmpty().EmailAddress().MaximumLength(320);
         RuleFor(command => command.Lines).NotEmpty();
 

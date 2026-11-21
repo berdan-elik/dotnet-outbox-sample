@@ -45,10 +45,6 @@ namespace OutboxSample.Infrastructure.Persistence.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("response_body");
 
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("integer")
-                        .HasColumnName("status_code");
-
                     b.HasKey("Key")
                         .HasName("pk_idempotency_records");
 
