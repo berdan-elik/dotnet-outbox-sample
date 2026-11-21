@@ -16,19 +16,33 @@ jobs:
       - run: dotnet build -c Release
       - run: dotnet test -c Release --no-build
 
+  # Runs the commands from the README against the composed stack.
   compose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - run: docker compose up -d --build --wait
-      - name: create an order and read it back
+      - name: run the readme examples
         run: |
-          curl --fail --silent --retry 15 --retry-all-errors --retry-delay 2 http://localhost:8080/health
-          location=$(curl --fail --silent --output /dev/null --write-out '%header{location}' \
-            -X POST http://localhost:8080/orders \
-            -H 'Content-Type: application/json' \
-            -H 'Idempotency-Key: ci-smoke-1' \
-            -d '{"customerEmail":"ada@example.com","lines":[{"sku":"SKU-1","quantity":2,"unitPrice":19.90}]}')
-          curl --fail --silent "http://localhost:8080$location"
+          set -x
+          base=http://localhost:8080
+          two='{"customerEmail":"ada@example.com","lines":[{"sku":"SKU-1","quantity":2,"unitPrice":19.90}]}'
+          three='{"customerEmail":"ada@example.com","lines":[{"sku":"SKU-1","quantity":3,"unitPrice":19.90}]}'
+          post() {
+            curl --silent --output "$3" --write-out '%{http_code}' -X POST "$base/orders" \
+              -H 'Content-Type: application/json' -H "Idempotency-Key: $1" -d "$2"
+          }
+
+          curl --fail --silent --retry 15 --retry-all-errors --retry-delay 2 "$base/health"
+
+          test "$(post demo-1 "$two" first.json)" = 201
+          test "$(post demo-1 "$two" second.json)" = 201
+          test "$(jq -r .id first.json)" = "$(jq -r .id second.json)"
+          test "$(post demo-1 "$three" /dev/null)" = 422
+
+          curl --fail --silent "$base/orders/$(jq -r .id first.json)"
+
+          sleep 3
+          test "$(docker compose logs api | grep -c 'Order confirmation')" = 1
       - if: always()
         run: docker compose logs api
