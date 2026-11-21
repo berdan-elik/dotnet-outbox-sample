@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OutboxSample.Application;
 using OutboxSample.Infrastructure.Persistence;
 
 namespace OutboxSample.Infrastructure;
@@ -15,6 +16,7 @@ public static class DependencyInjection
         services.AddDbContext<OrdersDbContext>(options => options
             .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention());
+        services.AddScoped<IOrdersDbContext>(provider => provider.GetRequiredService<OrdersDbContext>());
 
         return services;
     }
