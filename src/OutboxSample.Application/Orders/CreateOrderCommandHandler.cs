@@ -21,8 +21,9 @@ public sealed class CreateOrderCommandHandler(IOrdersDbContext db, TimeProvider 
         db.Orders.Add(order);
         db.OutboxMessages.Add(OutboxMessage.Create(OrderPlaced.MessageType, payload, now));
 
-        // One SaveChanges is one database transaction: the order and its outbox
-        // message are committed together or not at all.
+        // The order and its outbox message go out in the same SaveChanges, so they are
+        // written together or not at all. The surrounding transaction is opened and
+        // committed by IdempotencyBehavior, together with the idempotency record.
         await db.SaveChangesAsync(cancellationToken);
 
         return OrderResponse.From(order);
