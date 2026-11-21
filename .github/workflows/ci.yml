@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - run: dotnet build -c Release
+      - run: dotnet test -c Release --no-build
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose up -d --build --wait
+      - name: create an order and read it back
+        run: |
+          curl --fail --silent --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8080/health
+          location=$(curl --fail --silent --output /dev/null --write-out '%header{location}' \
+            -X POST http://localhost:8080/orders \
+            -H 'Content-Type: application/json' \
+            -H 'Idempotency-Key: ci-smoke-1' \
+            -d '{"customerEmail":"ada@example.com","lines":[{"sku":"SKU-1","quantity":2,"unitPrice":19.90}]}')
+          curl --fail --silent "http://localhost:8080$location"
+      - if: always()
+        run: docker compose logs api
