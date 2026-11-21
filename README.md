@@ -21,6 +21,8 @@ docker compose up --build
 
 The API listens on `http://localhost:8080`. On the first start the log shows one `fail:` line from EF Core probing for its migrations table before creating it; that is expected.
 
+PostgreSQL is not published to the host; to look at the tables, run `docker compose exec db psql -U orders orders`.
+
 Create an order:
 
 ```

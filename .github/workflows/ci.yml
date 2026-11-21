@@ -44,5 +44,7 @@ jobs:
 
           sleep 3
           test "$(docker compose logs api | grep -c 'Order confirmation')" = 1
+
+          docker compose exec -T db psql -U orders orders -c 'select count(*) from orders'
       - if: always()
         run: docker compose logs api
