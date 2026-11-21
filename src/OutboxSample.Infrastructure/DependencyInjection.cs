@@ -14,11 +14,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Orders")
-            ?? throw new InvalidOperationException("Connection string 'Orders' is missing.");
-
-        services.AddDbContext<OrdersDbContext>(options => options
-            .UseNpgsql(connectionString)
+        // Read when the context is first built rather than here, so a host that swaps
+        // configuration after registration (the test host does) is still honoured.
+        services.AddDbContext<OrdersDbContext>((provider, options) => options
+            .UseNpgsql(provider.GetRequiredService<IConfiguration>().GetConnectionString("Orders"))
             .UseSnakeCaseNamingConvention());
         services.AddScoped<IOrdersDbContext>(provider => provider.GetRequiredService<OrdersDbContext>());
         services.AddScoped<IIdempotencyStore, IdempotencyStore>();

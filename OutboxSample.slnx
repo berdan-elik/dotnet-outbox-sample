@@ -6,6 +6,7 @@
     <Project Path="src/OutboxSample.Infrastructure/OutboxSample.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/OutboxSample.IntegrationTests/OutboxSample.IntegrationTests.csproj" />
     <Project Path="tests/OutboxSample.UnitTests/OutboxSample.UnitTests.csproj" />
   </Folder>
 </Solution>
