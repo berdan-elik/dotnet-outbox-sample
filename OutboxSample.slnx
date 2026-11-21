@@ -5,4 +5,7 @@
     <Project Path="src/OutboxSample.Domain/OutboxSample.Domain.csproj" />
     <Project Path="src/OutboxSample.Infrastructure/OutboxSample.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/OutboxSample.UnitTests/OutboxSample.UnitTests.csproj" />
+  </Folder>
 </Solution>
