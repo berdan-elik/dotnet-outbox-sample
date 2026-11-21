@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /repo
 
 # Project files first, so the restore layer is reused until a dependency changes.
-COPY global.json Directory.Build.props ./
+COPY global.json Directory.Build.props Directory.Packages.props ./
 COPY src/OutboxSample.Domain/OutboxSample.Domain.csproj src/OutboxSample.Domain/
 COPY src/OutboxSample.Application/OutboxSample.Application.csproj src/OutboxSample.Application/
 COPY src/OutboxSample.Infrastructure/OutboxSample.Infrastructure.csproj src/OutboxSample.Infrastructure/
