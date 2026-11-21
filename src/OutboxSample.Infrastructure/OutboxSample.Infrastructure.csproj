@@ -5,6 +5,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- For BackgroundService and options binding, without pinning each Microsoft.Extensions package. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
