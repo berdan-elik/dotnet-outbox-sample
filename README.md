@@ -92,6 +92,8 @@ Dependencies point inward: Api references Application and Infrastructure, Infras
 - Cleanup. Processed outbox rows and old idempotency records stay in their tables.
 - A separate migration step. The API applies migrations at startup, which is fine for one instance and wrong for several.
 - Canonical request hashing. The hash is taken over the parsed request, so whitespace and property order do not matter, but `10` and `10.00` count as different bodies.
+- Scoping and expiry of idempotency keys. A key is global rather than per user, since there is no authentication, and its record is kept forever.
+- Scrubbing the outbox payload. The customer email stays in the row after the message is sent.
 
 MediatR is pinned to 12.5.0, the last release under Apache-2.0.
 
