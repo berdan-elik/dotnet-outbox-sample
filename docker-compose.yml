@@ -16,7 +16,7 @@ services:
   api:
     build: .
     environment:
-      ConnectionStrings__Orders: Host=db;Port=5432;Database=orders;Username=orders;Password=orders
+      ConnectionStrings__Orders: Host=db;Port=5432;Database=orders;Username=orders;Password=orders;GSS Encryption Mode=Disable
     ports:
       - "8080:8080"
     depends_on:

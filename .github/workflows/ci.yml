@@ -23,7 +23,7 @@ jobs:
       - run: docker compose up -d --build --wait
       - name: create an order and read it back
         run: |
-          curl --fail --silent --retry 10 --retry-connrefused --retry-delay 2 http://localhost:8080/health
+          curl --fail --silent --retry 15 --retry-all-errors --retry-delay 2 http://localhost:8080/health
           location=$(curl --fail --silent --output /dev/null --write-out '%header{location}' \
             -X POST http://localhost:8080/orders \
             -H 'Content-Type: application/json' \
